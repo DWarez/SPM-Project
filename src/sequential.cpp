@@ -1,0 +1,49 @@
+#include <stdlib.h>
+#include <iostream>
+#include <math.h>
+#include <utility>
+#include <fstream>
+#include <string>
+#include <vector>
+#include <queue>
+#include <cstring>
+#include <ios>
+#include "knn_utility.hpp"
+
+int k = 4;
+
+int main() {
+    // allocate memory for input space
+    std::vector<point> space;
+    // initialize input stream from file
+    std::fstream inputs;
+    inputs.open("inputs.txt", std::ios::in);
+
+    // get lines and obtain points from parsing
+    if(inputs.is_open()) {
+        std::string tmp;
+        while(std::getline(inputs, tmp)) {
+            space.push_back(knn_utility::make_pair_from_string(tmp));
+        }
+    }
+    inputs.close();
+    
+    // for each point in the space
+    for(auto x : space) {
+        // vector to store the minima of point x
+        std::vector<pdistance> min_k;
+        // for each point in the space
+        for(auto y : space) {
+            // skip distance between x and x itself
+            if(x == y) continue;
+            // sort insert the distance between x and y
+            knn_utility::sort_insert(&min_k, std::make_pair(knn_utility::euclidean_distance(x, y), y));
+        }
+        // print the knn for point x
+        knn_utility::print_min_k(x, min_k);
+        // clear the structure
+        min_k.clear();
+    }
+    return 0;
+}
+
