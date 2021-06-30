@@ -10,9 +10,15 @@
 #include <ios>
 #include "knn_utility.hpp"
 
-int k = 4;
 
-int main() {
+int main(int argc, char* argv[]) {
+
+    if(argc != 2) {
+        std::cout << "Usage: ./parallel.cpp k." << std::endl;
+        return -1;
+    }
+
+    int k = atoi(argv[1]);
     // allocate memory for input space
     std::vector<point> space;
     // initialize input stream from file
@@ -28,6 +34,9 @@ int main() {
     }
     inputs.close();
     
+    std::ofstream output;
+    output.open("output_seq.txt", std::ios::out);
+
     // for each point in the space
     for(auto x : space) {
         // vector to store the minima of point x
@@ -37,13 +46,15 @@ int main() {
             // skip distance between x and x itself
             if(x == y) continue;
             // sort insert the distance between x and y
-            knn_utility::sort_insert(&min_k, std::make_pair(knn_utility::euclidean_distance(x, y), y));
+            knn_utility::sort_insert(&min_k, std::make_pair(knn_utility::euclidean_distance(x, y), y), k);
         }
-        // print the knn for point x
-        knn_utility::print_min_k(x, min_k);
+        // print result on file
+        output << knn_utility::min_k_to_str(x, min_k);
         // clear the structure
         min_k.clear();
     }
+
+    output.close();
     return 0;
 }
 

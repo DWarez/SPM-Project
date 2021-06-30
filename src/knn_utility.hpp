@@ -3,9 +3,6 @@
 #ifndef KNN_UTILITY
 #define KNN_UTILITY
 
-// Number of elements to be considered in the list of the closest points to point x
-extern int k;
-
 // Definition of a point as a pair of doubles (coordinates)
 typedef std::pair<double, double> point;
 // Definition of pdistance as a pair of double (distance of x from y) and a point (point x)
@@ -30,10 +27,19 @@ namespace knn_utility {
     
     // Function to pretty print a vector of pdistances
     void print_min_k(point p, std::vector<pdistance> x) {
-        std::cout << "\nPrinting min_k of point: (" << std::get<0>(p) << ", " <<  std::get<1>(p) << ")" << std::endl;
+        std::cout << "Printing min_k of point: (" << std::get<0>(p) << ", " <<  std::get<1>(p) << ")" << std::endl;
         for(auto e : x) {
             std::cout << "Point: " << knn_utility::str_point(std::get<1>(e)) << " with distance: " << std::get<0>(e) << std::endl;
         }
+    }
+
+    std::string min_k_to_str(point p, std::vector<pdistance> x) {
+        std::string r = "";
+        r += "\n\nPrinting min_k of point: " + knn_utility::str_point(p) + "\n";
+        for(auto e : x) {
+            r += "\nPoint: " + knn_utility::str_point(std::get<1>(e)) +  " with distance: " + std::to_string(std::get<0>(e));
+        }
+        return r;
     }
 
     // Function to create points from strings, in particular from the strings generated from generate_data.py
@@ -67,7 +73,7 @@ namespace knn_utility {
 
 
     // method to insert pdistances in a sorted way
-    void sort_insert(std::vector<pdistance>* x, pdistance value) {
+    void sort_insert(std::vector<pdistance>* x, pdistance value, int k) {
 
         // If empy simply add the value
         if(x->empty()) {
@@ -98,7 +104,7 @@ namespace knn_utility {
 
         // if the vector size exceedes the number of minima we want to find, pop the
         // last element which is also the larger minimum found up to now
-        if(x->size() >= k) {
+        if(x->size() > k) {
             x->pop_back();
         }
         return;
