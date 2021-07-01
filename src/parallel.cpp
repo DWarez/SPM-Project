@@ -12,7 +12,7 @@
 #include <mutex>
 #include "knn_utility.hpp"
 
-std::mutex ostream;
+std::mutex m_ostream;
 
 void compute_min_k(std::vector<point>* space, int start, int finish, int k, std::ofstream* output) {
     std::vector<pdistance> min_k;
@@ -23,8 +23,9 @@ void compute_min_k(std::vector<point>* space, int start, int finish, int k, std:
             // sort insert the distance between x and y
             knn_utility::sort_insert(&min_k, std::make_pair(knn_utility::euclidean_distance((*space)[i], y), y), k);
         }
-        std::lock_guard<std::mutex> guard(ostream);
+        m_ostream.lock();
         (*output) << knn_utility::min_k_to_str((*space)[i], min_k);
+        m_ostream.unlock();
         min_k.clear();
     }
 }
