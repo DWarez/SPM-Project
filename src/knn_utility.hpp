@@ -66,13 +66,13 @@ namespace knn_utility {
     }
 
 
-    // compute the euclian distance in 2D: r = sqrt((x_0 - y_0)^2 + (x_1 - y_1)^2)
+    // function to compute the euclian distance in 2D: r = sqrt((x_0 - y_0)^2 + (x_1 - y_1)^2)
     double euclidean_distance(point x, point y) {
         return sqrt(pow((std::get<0>(x) - std::get<0>(y)), 2) + pow((std::get<1>(x) - std::get<1>(y)), 2));
     }
 
 
-    // method to insert pdistances in a sorted way
+    // function to insert pdistances in a sorted way
     void sort_insert(std::vector<pdistance>* x, pdistance value, int k) {
 
         // If empy simply add the value
