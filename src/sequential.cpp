@@ -8,13 +8,13 @@
 #include <queue>
 #include <cstring>
 #include <ios>
-#include "knn_utility.hpp"
+#include <knn_utility.hpp>
 
 
 int main(int argc, char* argv[]) {
 
     if(argc != 2) {
-        std::cout << "Usage: ./parallel.cpp k." << std::endl;
+        std::cout << "Usage: ./parallel.cpp <number of points>" << std::endl;
         return -1;
     }
 
@@ -23,7 +23,7 @@ int main(int argc, char* argv[]) {
     std::vector<point> space;
     // initialize input stream from file
     std::fstream inputs;
-    inputs.open("inputs.txt", std::ios::in);
+    inputs.open("../data/inputs.txt", std::ios::in);
 
     // get lines and obtain points from parsing
     if(inputs.is_open()) {
@@ -35,7 +35,7 @@ int main(int argc, char* argv[]) {
     inputs.close();
     
     std::ofstream output;
-    output.open("output_seq.txt", std::ios::out);
+    output.open("../data/output_seq.txt", std::ios::out);
 
     // for each point in the space
     for(auto x : space) {
