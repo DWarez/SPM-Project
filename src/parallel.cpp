@@ -10,10 +10,13 @@
 #include <ios>
 #include <thread>
 #include <mutex>
-#include "knn_utility.hpp"
+#include <knn_utility.hpp>
+#include <utimer.hpp>
 
+// Mutex used to syncronize the output file
 std::mutex m_ostream;
 
+// Body of the threads
 void compute_min_k(std::vector<point>* space, int start, int finish, int k, std::ofstream* output) {
     std::vector<pdistance> min_k;
     for(size_t i = start; i < finish; ++i) {
@@ -33,21 +36,23 @@ void compute_min_k(std::vector<point>* space, int start, int finish, int k, std:
 
 int main(int argc, char* argv[]) {
     if(argc != 3) {
-        std::cout << "Usage: ./parallel.cpp k nw." << std::endl;
+        std::cout << "Usage: ./parallel.cpp <number of points> <number of workers>" << std::endl;
         return -1;
     }
 
+    // grab input parameters
     int k = atoi(argv[1]);
     int nw = atoi(argv[2]);
 
-    // allocate memory for input space
+    // vector of the input space
     std::vector<point> space;
     // initialize input stream from file
     std::fstream inputs;
-    inputs.open("inputs.txt", std::ios::in);
+    inputs.open("../data/inputs.txt", std::ios::in);
 
     // get lines and obtain points from parsing
     if(inputs.is_open()) {
+        std::cout << "Reading input file" << std::endl;
         std::string tmp;
         while(std::getline(inputs, tmp)) {
             space.push_back(knn_utility::make_pair_from_string(tmp));
@@ -55,22 +60,26 @@ int main(int argc, char* argv[]) {
     }
     inputs.close();
     
-
+    // open output stream
     std::ofstream output;
-    output.open("output_par.txt", std::ios::trunc);
+    output.open("../data/output_par.txt", std::ios::out);
 
+    // vector for storing thread ids
     std::vector<std::thread*> tids;
+    // establish how many points will be managed by the thread
     int rate = space.size()/nw;
 
-    for(size_t i = 0; i < space.size(); i += rate) {
-        std::cout << "Creating thread" << std::endl;
-        tids.push_back(new std::thread(compute_min_k, &space, i, i + rate, k, &output));
-    }
+    {
+        utimer tpar("Parallel time with " + std::to_string(nw) + " workers");
+        // starting threads
+        for(size_t i = 0; i < space.size(); i += rate) 
+            tids.push_back(new std::thread(compute_min_k, &space, i, i + rate, k, &output));
 
-    for(auto e : tids) {
-        std::cout << "Joining thread" << std::endl;
-        e->join();
+        // joining threads
+        for(auto e : tids) e->join();
     }
+    
+
     output.close();
     return 0;
 }
