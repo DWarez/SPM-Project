@@ -68,12 +68,26 @@ int main(int argc, char* argv[]) {
     std::vector<std::thread*> tids;
     // establish how many points will be managed by the thread
     int rate = space.size()/nw;
+    int reminder = space.size()%nw;
 
     {
         utimer tpar("Parallel time with " + std::to_string(nw) + " workers");
         // starting threads
-        for(size_t i = 0; i < space.size(); i += rate) 
+        size_t i = 0;
+        for(i = 0; i < space.size() - reminder; i += rate) 
             tids.push_back(new std::thread(compute_min_k, &space, i, i + rate, k, &output));
+
+        // sequential block that computes KNN for the space.size()%nw points
+        // since it's not worth it to deal with them in a parallel way
+        for(i; i < space.size(); ++i) {
+            std::vector<pdistance> min_k;
+            for(size_t j = 0; j < space.size(); ++j) {
+                if(space[i] == space[j]) continue;
+                knn_utility::sort_insert(&min_k, std::make_pair(knn_utility::euclidean_distance(space[i], space[j]), space[j]), k);
+            }
+            output << knn_utility::min_k_to_str(space[i], min_k);
+            min_k.clear();
+        }
 
         // joining threads
         for(auto e : tids) e->join();

@@ -3,16 +3,16 @@ import argparse
 
 # Arg parser: number of elements to be generated, max value of elements, min value of elements
 parser = argparse.ArgumentParser(description='Script used for generating input data for the KNN project')
-parser.add_argument('-n', dest='elements', type=int, default=50000, help='Number of elements of input data')
+parser.add_argument('-n', dest='elements', type=int, default=100, help='Number of elements of input data')
 parser.add_argument('-u', dest='upperbound', type=float, default=100, help='Upper bound of values of points dimentions')
 parser.add_argument('-l', dest='lowerbound', type=float, default=-100, help='Lower bound of values of points dimentions')
 
 args = parser.parse_args()
 
-# For not generating duplicates
+# just in case
 seen = []
 
-with open("inputs.txt", "w") as wfile:
+with open("../data/inputs.txt", "w") as wfile:
     for i in range(args.elements):
         point = (round(random.uniform(args.lowerbound, args.upperbound), 2), round(random.uniform(args.lowerbound, args.upperbound), 2))
         if point not in seen:
