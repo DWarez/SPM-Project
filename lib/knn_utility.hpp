@@ -60,9 +60,8 @@ namespace knn_utility {
         }
         // erasing and getting the second value
         std::string second = tmp2.erase(0, i);
-        
         // making the pair
-        return std::make_pair(std::stoi(first), std::stoi(second));
+        return std::make_pair(std::stod(first), std::stod(second));
     }
 
 
