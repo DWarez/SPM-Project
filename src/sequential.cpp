@@ -1,12 +1,9 @@
 #include <stdlib.h>
 #include <iostream>
 #include <math.h>
-#include <utility>
 #include <fstream>
 #include <string>
 #include <vector>
-#include <queue>
-#include <cstring>
 #include <ios>
 #include <knn_utility.hpp>
 #include <utimer.hpp>

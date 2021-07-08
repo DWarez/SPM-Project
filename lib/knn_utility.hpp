@@ -3,6 +3,11 @@
 #ifndef KNN_UTILITY
 #define KNN_UTILITY
 
+#include <iomanip>
+#include <sstream>
+#include <utility>
+#include <cstring>
+
 // Definition of a point as a pair of doubles (coordinates)
 typedef std::pair<double, double> point;
 // Definition of pdistance as a pair of double (distance of x from y) and a point (point x)
@@ -13,7 +18,11 @@ namespace knn_utility {
 
     // Function to pretty print a point
     std::string str_point(point p) {
-        return "(" + std::to_string(std::get<0>(p)) + ", " + std::to_string(std::get<1>(p)) + ")";
+        std::stringstream stream1;
+        stream1 << std::fixed << std::setprecision(2) << std::get<0>(p);
+        std::stringstream stream2;
+        stream2 << std::fixed << std::setprecision(2) << std::get<1>(p);
+        return "(" + stream1.str() + ", " + stream2.str() + ")";
     }
 
 
@@ -27,7 +36,7 @@ namespace knn_utility {
     
     // Function to pretty print a vector of pdistances
     void print_min_k(point p, std::vector<pdistance> x) {
-        std::cout << "Printing min_k of point: (" << std::get<0>(p) << ", " <<  std::get<1>(p) << ")" << std::endl;
+        std::cout << "Printing min_k of point: " << knn_utility::str_point(p) << std::endl;
         for(auto e : x) {
             std::cout << "Point: " << knn_utility::str_point(std::get<1>(e)) << " with distance: " << std::get<0>(e) << std::endl;
         }
@@ -61,7 +70,7 @@ namespace knn_utility {
         // erasing and getting the second value
         std::string second = tmp2.erase(0, i);
         // making the pair
-        return std::make_pair(std::stod(first), std::stod(second));
+        return std::make_pair(std::stof(first), std::stof(second));
     }
 
 
