@@ -83,5 +83,7 @@ int main(int argc, char* argv[]) {
     pf.parallel_for(0, space.size(), knn, nw);
     output.close();
     ff::ffTime(ff::STOP_TIME);
+
+    std::cout << "Parallel time using Fastflow using " << nw << " threads: " << ff::ffTime(ff::GET_TIME) << std::endl;
     return 0;
 }
