@@ -36,13 +36,13 @@ void compute_min_k(std::vector<point>* space, int start, int finish, int k, std:
 
 int main(int argc, char* argv[]) {
     if(argc != 3) {
-        std::cout << "Usage: ./parallel.cpp <number of points> <number of workers>" << std::endl;
+        std::cout << "Usage: ./parallel.o <number of points> <number of workers>" << std::endl;
         return -1;
     }
 
     // grab input parameters
-    int k = atoi(argv[1]);
-    int nw = atoi(argv[2]);
+    int k = std::stol(argv[1]);
+    int nw = std::stol(argv[2]);
 
     // vector of the input space
     std::vector<point> space;

@@ -15,11 +15,11 @@
 int main(int argc, char* argv[]) {
 
     if(argc != 2) {
-        std::cout << "Usage: ./parallel.cpp <number of points>" << std::endl;
+        std::cout << "Usage: ./sequential.o <number of points>" << std::endl;
         return -1;
     }
 
-    int k = atoi(argv[1]);
+    int k = std::stol(argv[1]);
     // allocate memory for input space
     std::vector<point> space;
     // initialize input stream from file
