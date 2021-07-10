@@ -1,4 +1,5 @@
 import random
+import os
 import argparse
 
 # Arg parser: number of elements to be generated, max value of elements, min value of elements
@@ -11,6 +12,9 @@ args = parser.parse_args()
 
 # just in case
 seen = []
+
+if not os.path.isdir("../data"):
+    os.mkdir("../data")
 
 with open("../data/inputs.txt", "w") as wfile:
     for i in range(args.elements):
