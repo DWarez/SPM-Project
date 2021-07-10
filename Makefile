@@ -14,10 +14,13 @@ fastflow_in = ./src/parallel_ff.cpp
 fastflow_out = ./bin/parallel_ff.o
 
 knn_sequential:
+	mkdir -p bin
 	$(CXX) $(CXXFLAGS) -I $(LIB) $(sequential_in) -o $(sequential_out)
 
 knn_parallel:
+	mkdir -p bin
 	$(CXX) $(CXXFLAGS) -I $(LIB) $(parallel_in) -o $(parallel_out)
 
 knn_fastflow:
+	mkdir -p bin
 	$(CXX) $(CXXFLAGS) -I $(FF) -I $(LIB) $(fastflow_in) -o $(fastflow_out)
