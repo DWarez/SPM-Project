@@ -68,6 +68,7 @@ int main(int argc, char* argv[]) {
     int reminder = space.size()%nw;
 
     {
+        // remember that if you change the output string the benchmark script breaks :|
         utimer tpar("Parallel time with " + std::to_string(nw) + " workers");
         // starting threads
         size_t i = 0;

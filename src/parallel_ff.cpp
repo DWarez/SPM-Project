@@ -8,6 +8,7 @@
 #include <thread>
 #include <mutex>
 #include <knn_utility.hpp>
+#include <utimer.hpp>
 #include <ff/ff.hpp>
 #include <ff/parallel_for.hpp>
 
@@ -62,28 +63,29 @@ int main(int argc, char* argv[]) {
     std::ofstream output;
     output.open("../data/output_ff.txt", std::ios::out);
 
-    ff::ffTime(ff::START_TIME);
-    ff::ParallelFor pf(nw);
+    {
+        // remember that if you change the output string the benchmark script breaks :|
+        utimer tff("Parallel time using Fastflow with " + std::to_string(nw) + " workers:");
+        ff::ParallelFor pf(nw);
 
-    auto knn = [&](const size_t i) {
-        std::vector<pdistance> min_k;
-        // for each point in the space
-        for(size_t j = 0; j < space.size(); ++j) {
-            // skip distance between x and x itself
-            if((std::get<0>(space[i]) == std::get<0>(space[j])) && (std::get<1>(space[i]) == std::get<1>(space[j]))) continue;
-            // sort insert the distance between x and y
-            knn_utility::sort_insert(&min_k, std::make_pair(knn_utility::euclidean_distance(space[i], space[j]), space[j]), k);
-        }
-        // print result on file
-        output << knn_utility::min_k_to_str(space[i], min_k);
-        // clear the structure
-        min_k.clear();
-    };
+        auto knn = [&](const size_t i) {
+            std::vector<pdistance> min_k;
+            // for each point in the space
+            for(size_t j = 0; j < space.size(); ++j) {
+                // skip distance between x and x itself
+                if((std::get<0>(space[i]) == std::get<0>(space[j])) && (std::get<1>(space[i]) == std::get<1>(space[j]))) continue;
+                // sort insert the distance between x and y
+                knn_utility::sort_insert(&min_k, std::make_pair(knn_utility::euclidean_distance(space[i], space[j]), space[j]), k);
+            }
+            // print result on file
+            output << knn_utility::min_k_to_str(space[i], min_k);
+            // clear the structure
+            min_k.clear();
+        };
 
-    pf.parallel_for(0, space.size(), knn, nw);
-    output.close();
-    ff::ffTime(ff::STOP_TIME);
-
-    std::cout << "Parallel time using Fastflow using " << nw << " threads: " << ff::ffTime(ff::GET_TIME) << std::endl;
+        pf.parallel_for(0, space.size(), knn, nw);
+        output.close();
+    }
+    
     return 0;
 }

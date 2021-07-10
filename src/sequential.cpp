@@ -37,6 +37,7 @@ int main(int argc, char* argv[]) {
     output.open("../data/output_seq.txt", std::ios::out);
 
     {
+        // remember that if you change the output string the benchmark script breaks :|
         utimer tseq("Sequential time");
         // for each point in the space
         for(auto x : space) {

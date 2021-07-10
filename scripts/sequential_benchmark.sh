@@ -1,23 +1,15 @@
 #!/bin/bash
 
+# check correct number of parameters
 if [ "$#" -ne 2 ]; then
     echo "Usage: ./sequential_benchmark.sh <number of iterations> <number of points>"
     exit 2
 fi
 
-#SECONDS=0
+# grab input parameters
 iterations=$1
 points=$2
 
-start=`date +%s.%N`
-
+# compute mean elapsed time
 echo "Computing the mean sequential completation time considering K = $points using $iterations iterations"
-for((i=1;i<=$iterations;i++)); do ../bin/sequential.o $points; done
-
-end=`date +%s.%N`
-
-elapsed=$( echo "$end - $start" | bc -l )
-
-mean=$(echo "$elapsed / $iterations" | bc -l)
-
-echo "Cumulative time elapsed: $elapsed seconds; Mean: $mean seconds"
+for((i=0; i<$iterations; i++)); do ../bin/sequential.o $points ; done | awk '{sum += $5} END {print sum/NR}'
