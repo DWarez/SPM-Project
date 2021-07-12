@@ -25,7 +25,6 @@ int main(int argc, char* argv[]) {
 
     // get lines and obtain points from parsing
     if(inputs.is_open()) {
-        std::cout << "Reading input file" << std::endl;
         std::string tmp;
         while(std::getline(inputs, tmp)) {
             space.push_back(knn_utility::make_pair_from_string(tmp));
