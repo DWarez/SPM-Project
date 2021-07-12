@@ -12,4 +12,4 @@ points=$2
 
 # compute mean elapsed time
 echo "Computing the mean sequential completation time considering K = $points using $iterations iterations"
-for((i=0; i<$iterations; i++)); do ../bin/sequential.o $points ; done | awk '{sum += $5} END {print sum/NR}'
+for((i=0; i<$iterations; i++)); do ../bin/sequential.o $points ; done | awk '{sum += $5} END {printf "%.0f", sum/NR}'

@@ -24,4 +24,3 @@ with open("../data/inputs.txt", "w") as wfile:
             wfile.write(f"{point}\n")
         else:
             i = i - 1
-        
