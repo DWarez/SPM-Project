@@ -45,18 +45,19 @@ int main(int argc, char* argv[]) {
     std::vector<point> space;
     // initialize input stream from file
     std::fstream inputs;
+    inputs.open("../data/inputs.txt", std::ios::in);
     
-     // vector for storing thread ids
+    // open output stream
+    std::ofstream output;
+    output.open("../data/output_par.txt", std::ios::out);
+
+    // vector for storing thread ids
     std::vector<std::thread*> tids;
-    // establish how many points will be managed by the thread
-    int rate = std::ceil(space.size()/nw);
-    int reminder = space.size()%nw;
 
     {
         // remember that if you change the output string the benchmark script breaks :|
         utimer tpar("Parallel time with " + std::to_string(nw) + " workers");
 
-        inputs.open("../data/inputs.txt", std::ios::in);
         // get lines and obtain points from parsing
         if(inputs.is_open()) {
             std::string tmp;
@@ -65,10 +66,9 @@ int main(int argc, char* argv[]) {
             }
         }
         inputs.close();
-        
-        // open output stream
-        std::ofstream output;
-        output.open("../data/output_par.txt", std::ios::out);
+
+        // establish how many points will be managed by the thread
+        int rate = std::ceil(space.size()/nw);
 
         // starting threads
         size_t i = 0;
@@ -81,8 +81,6 @@ int main(int argc, char* argv[]) {
 
         // joining threads
         for(auto e : tids) e->join();
-
-        // close output stream
         output.close();
     }
     
