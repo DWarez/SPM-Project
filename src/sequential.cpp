@@ -21,23 +21,24 @@ int main(int argc, char* argv[]) {
     std::vector<point> space;
     // initialize input stream from file
     std::fstream inputs;
-    inputs.open("../data/inputs.txt", std::ios::in);
-
-    // get lines and obtain points from parsing
-    if(inputs.is_open()) {
-        std::string tmp;
-        while(std::getline(inputs, tmp)) {
-            space.push_back(knn_utility::make_pair_from_string(tmp));
-        }
-    }
-    inputs.close();
-    
-    std::ofstream output;
-    output.open("../data/output_seq.txt", std::ios::out);
 
     {
         // remember that if you change the output string the benchmark script breaks :|
         utimer tseq("Sequential time");
+        inputs.open("../data/inputs.txt", std::ios::in);
+
+        // get lines and obtain points from parsing
+        if(inputs.is_open()) {
+            std::string tmp;
+            while(std::getline(inputs, tmp)) {
+                space.push_back(knn_utility::make_pair_from_string(tmp));
+            }
+        }
+        inputs.close();
+        // open output file
+        std::ofstream output;
+        output.open("../data/output_seq.txt", std::ios::out);
+        
         // for each point in the space
         for(auto x : space) {
         // vector to store the minima of point x

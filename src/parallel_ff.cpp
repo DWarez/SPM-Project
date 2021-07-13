@@ -47,24 +47,25 @@ int main(int argc, char* argv[]) {
     std::vector<point> space;
     // initialize input stream from file
     std::fstream inputs;
-    inputs.open("../data/inputs.txt", std::ios::in);
-
-    // get lines and obtain points from parsing
-    if(inputs.is_open()) {
-        std::string tmp;
-        while(std::getline(inputs, tmp)) {
-            space.push_back(knn_utility::make_pair_from_string(tmp));
-        }
-    }
-    inputs.close();
-    
-    // open output stream
-    std::ofstream output;
-    output.open("../data/output_ff.txt", std::ios::out);
 
     {
         // remember that if you change the output string the benchmark script breaks :|
         utimer tff("Parallel time using Fastflow with " + std::to_string(nw) + " workers:");
+
+        inputs.open("../data/inputs.txt", std::ios::in);
+        // get lines and obtain points from parsing
+        if(inputs.is_open()) {
+            std::string tmp;
+            while(std::getline(inputs, tmp)) {
+                space.push_back(knn_utility::make_pair_from_string(tmp));
+            }
+        }
+        inputs.close();
+        
+        // open output stream
+        std::ofstream output;
+        output.open("../data/output_ff.txt", std::ios::out);
+
         ff::ParallelFor pf(nw);
 
         auto knn = [&](const size_t i) {
