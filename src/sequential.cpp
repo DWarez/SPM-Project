@@ -38,7 +38,7 @@ int main(int argc, char* argv[]) {
         // open output file
         std::ofstream output;
         output.open("../data/output_seq.txt", std::ios::out);
-        
+
         // for each point in the space
         for(auto x : space) {
         // vector to store the minima of point x
@@ -55,10 +55,10 @@ int main(int argc, char* argv[]) {
             // clear the structure
             min_k.clear();
         }
+        // close output stream
+        output.close();
     }
     
-
-    output.close();
     return 0;
 }
 

@@ -81,9 +81,10 @@ int main(int argc, char* argv[]) {
 
         // joining threads
         for(auto e : tids) e->join();
+
+        // close output stream
+        output.close();
     }
     
-
-    output.close();
     return 0;
 }
