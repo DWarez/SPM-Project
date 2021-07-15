@@ -13,4 +13,4 @@ nw=$3
 
 # compute mean elapsed time
 echo "Computing the mean parallel completation time using $nw workers and Fastflow considering K = $points using $iterations iterations"
-for((i=0; i<$iterations; i++)); do ../bin/parallel_ff.o $points $nw; done | awk '{sum += $10} END {printf "%.0f", sum/NR}'
+for((i=0; i<$iterations; i++)); do ../bin/parallel_ff.o $points $nw; done | awk '{sum += $10} END {printf "%.0f", sum/(0.5*NR)}'
