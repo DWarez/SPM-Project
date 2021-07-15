@@ -36,9 +36,7 @@ int main(int argc, char* argv[]) {
     std::vector<point> space;
 
     {
-        // remember that if you change the output string the benchmark script breaks :|
-        utimer tseq("Sequential time");
-
+        utimer tseq_in("Input time");
         // get lines and obtain points from parsing
         if(inputs.is_open()) {
             std::string tmp;
@@ -47,6 +45,12 @@ int main(int argc, char* argv[]) {
             }
         }
         inputs.close();
+    }
+
+    {
+        // remember that if you change the output string the benchmark script breaks :|
+        utimer tseq("Sequential time");
+
         // open output file
         std::ofstream output;
         output.open("../data/output_seq.txt", std::ios::out);

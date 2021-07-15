@@ -43,9 +43,7 @@ int main(int argc, char* argv[]) {
     std::vector<point> space;
 
     {
-        // remember that if you change the output string the benchmark script breaks :|
-        utimer tff("Parallel time using Fastflow with " + std::to_string(nw) + " workers:");
-
+        utimer tff_in("Input time");
         // get lines and obtain points from parsing
         if(inputs.is_open()) {
             std::string tmp;
@@ -54,6 +52,11 @@ int main(int argc, char* argv[]) {
             }
         }
         inputs.close();
+    }
+
+    {
+        // remember that if you change the output string the benchmark script breaks :|
+        utimer tff("Parallel time using Fastflow with " + std::to_string(nw) + " workers:");
         
         // open output stream
         std::ofstream output;

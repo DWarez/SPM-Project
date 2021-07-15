@@ -66,9 +66,7 @@ int main(int argc, char* argv[]) {
     std::vector<std::thread*> tids;
 
     {
-        // remember that if you change the output string the benchmark script breaks :|
-        utimer tpar("Parallel time with " + std::to_string(nw) + " workers");
-
+        utimer tpar_in("Input time");
         // get lines and obtain points from parsing
         if(inputs.is_open()) {
             std::string tmp;
@@ -77,6 +75,11 @@ int main(int argc, char* argv[]) {
             }
         }
         inputs.close();
+    }
+
+    {
+        // remember that if you change the output string the benchmark script breaks :|
+        utimer tpar("Parallel time with " + std::to_string(nw) + " workers");
 
         // establish how many points will be managed by the thread
         int rate = std::ceil(space.size()/nw);
