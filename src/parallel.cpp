@@ -32,8 +32,8 @@ void compute_min_k(std::vector<point>* space, int start, int finish, int k, std:
 
 
 int main(int argc, char* argv[]) {
-    if(argc != 3) {
-        std::cout << "Usage: ./parallel.o <number of points> <number of workers>" << std::endl;
+    if(argc != 3 && argc != 4) {
+        std::cout << "Usage: ./parallel.o <number of points> <number of workers> [input_file]" << std::endl;
         return -1;
     }
 
@@ -41,15 +41,26 @@ int main(int argc, char* argv[]) {
     int k = std::stol(argv[1]);
     int nw = std::stol(argv[2]);
 
-    // vector of the input space
-    std::vector<point> space;
+    std::string input_path = "";
+
+    if(argc == 4)
+        input_path = argv[3];
+    else
+        input_path = "../data/inputs.txt";
+
     // initialize input stream from file
-    std::fstream inputs;
-    inputs.open("../data/inputs.txt", std::ios::in);
+    std::ifstream inputs (input_path);
+    if(inputs.fail()) {
+        std::cout << "Failed to open the file, please check the input path." << std::endl;
+        return -1;
+    }
     
     // open output stream
     std::ofstream output;
     output.open("../data/output_par.txt", std::ios::out);
+
+    // vector of the input space
+    std::vector<point> space;
 
     // vector for storing thread ids
     std::vector<std::thread*> tids;

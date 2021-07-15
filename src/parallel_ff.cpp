@@ -15,27 +15,10 @@
 // Mutex used to syncronize the output file
 std::mutex m_ostream;
 
-// Body of the threads
-void compute_min_k(std::vector<point>* space, int start, int finish, int k, std::ofstream* output) {
-    std::vector<pdistance> min_k;
-    for(size_t i = start; i < finish; ++i) {
-        for(auto y : (*space)) {
-            // skip distance between x and x itself
-            if((*space)[i] == y) continue;
-            // sort insert the distance between x and y
-            knn_utility::sort_insert(&min_k, std::make_pair(knn_utility::euclidean_distance((*space)[i], y), y), k);
-        }
-        m_ostream.lock();
-        (*output) << knn_utility::min_k_to_str((*space)[i], min_k);
-        m_ostream.unlock();
-        min_k.clear();
-    }
-}
-
 
 int main(int argc, char* argv[]) {
-    if(argc != 3) {
-        std::cout << "Usage: ./parallel.o <number of points> <number of workers>" << std::endl;
+    if(argc != 3 && argc != 4) {
+        std::cout << "Usage: ./parallel.o <number of points> <number of workers> [input file]¡" << std::endl;
         return -1;
     }
 
@@ -43,16 +26,27 @@ int main(int argc, char* argv[]) {
     int k = std::stol(argv[1]);
     int nw = std::stol(argv[2]);
 
+    std::string input_path = "";
+
+    if(argc == 4)
+        input_path = argv[3];
+    else
+        input_path = "../data/inputs.txt";
+
+    // initialize input stream from file
+    std::ifstream inputs (input_path);
+    if(inputs.fail()) {
+        std::cout << "Failed to open the file, please check the input path." << std::endl;
+        return -1;
+    }
     // vector of the input space
     std::vector<point> space;
-    // initialize input stream from file
-    std::fstream inputs;
 
     {
         // remember that if you change the output string the benchmark script breaks :|
         utimer tff("Parallel time using Fastflow with " + std::to_string(nw) + " workers:");
 
-        inputs.open("../data/inputs.txt", std::ios::in);
+        inputs.open(input_path, std::ios::in);
         // get lines and obtain points from parsing
         if(inputs.is_open()) {
             std::string tmp;
@@ -67,7 +61,6 @@ int main(int argc, char* argv[]) {
         output.open("../data/output_ff.txt", std::ios::out);
 
         ff::ParallelFor pf(nw);
-
         auto knn = [&](const size_t i) {
             std::vector<pdistance> min_k;
             // for each point in the space
@@ -77,8 +70,11 @@ int main(int argc, char* argv[]) {
                 // sort insert the distance between x and y
                 knn_utility::sort_insert(&min_k, std::make_pair(knn_utility::euclidean_distance(space[i], space[j]), space[j]), k);
             }
+            std::cout << "printing";
             // print result on file
+            m_ostream.lock();
             output << knn_utility::min_k_to_str(space[i], min_k);
+            m_ostream.unlock();
             // clear the structure
             min_k.clear();
         };

@@ -11,21 +11,34 @@
 
 int main(int argc, char* argv[]) {
 
-    if(argc != 2) {
-        std::cout << "Usage: ./sequential.o <number of points>" << std::endl;
+    if(argc != 2 && argc != 3) {
+        std::cout << "Usage: ./sequential.o <number of points> [input_file]" << std::endl;
         return -1;
     }
 
     int k = std::stol(argv[1]);
+
+    std::string input_path = "";
+
+    if(argc == 3)
+        input_path = argv[2];
+    else
+        input_path = "../data/inputs.txt";
+
+    // initialize input stream from file
+    std::ifstream inputs (input_path);
+    if(inputs.fail()) {
+        std::cout << "Failed to open the file, please check the input path." << std::endl;
+        return -1;
+    }
+
     // allocate memory for input space
     std::vector<point> space;
-    // initialize input stream from file
-    std::fstream inputs;
 
     {
         // remember that if you change the output string the benchmark script breaks :|
         utimer tseq("Sequential time");
-        inputs.open("../data/inputs.txt", std::ios::in);
+        inputs.open(input_path, std::ios::in);
 
         // get lines and obtain points from parsing
         if(inputs.is_open()) {
