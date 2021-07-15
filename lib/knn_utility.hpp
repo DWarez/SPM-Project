@@ -53,22 +53,21 @@ namespace knn_utility {
 
     // Function to create points from strings, in particular from the strings generated from generate_data.py
     point make_pair_from_string(std::string s) {
-        std::string tmp = s;
-        std::string tmp2 = s;
-        // remove the parenthesis
-        tmp.erase(0, 1);
-        // erase until the comma, getting the first value
-        std::string first = tmp.erase(tmp.find(","));
-
+        std::string first = "";
+        std::string second = "";
+        bool b = true;
         // finding the space, that delimits the second value
-        int i = 0;
-        for(i = 0; i < tmp2.length(); ++i) {
-            if(tmp2[i] == ' ') {
-                break;
-            } 
+        for(size_t i = 0; i < s.length(); ++i) {
+            if(s[i] == ',') {
+                b = false;
+                continue;
+            }
+            if(b)
+                first += (s[i]);
+            else
+                second += (s[i]);
         }
-        // erasing and getting the second value
-        std::string second = tmp2.erase(0, i);
+        
         // making the pair
         return std::make_pair(std::stof(first), std::stof(second));
     }

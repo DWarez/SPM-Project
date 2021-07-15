@@ -21,6 +21,6 @@ with open("../data/inputs.txt", "w") as wfile:
         point = (round(random.uniform(args.lowerbound, args.upperbound), 2), round(random.uniform(args.lowerbound, args.upperbound), 2))
         if point not in seen:
             seen.append(point)
-            wfile.write(f"{point}\n")
+            wfile.write(f"{point[0]},{point[1]}\n")
         else:
             i = i - 1
