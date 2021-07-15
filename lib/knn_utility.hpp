@@ -43,10 +43,10 @@ namespace knn_utility {
     }
 
     std::string min_k_to_str(point p, std::vector<pdistance> x) {
-        std::string r = "";
-        r += "\n\n\nPrinting min_k of point: " + knn_utility::str_point(p);
+        std::string r = "\n";
+        r += knn_utility::str_point(p) + ": ";
         for(auto e : x) {
-            r += "\nPoint: " + knn_utility::str_point(std::get<1>(e)) +  " with distance: " + std::to_string(std::get<0>(e));
+            r += "<" + knn_utility::str_point(std::get<1>(e)) + "," + std::to_string(std::get<0>(e)) + "> ";
         }
         return r;
     }
