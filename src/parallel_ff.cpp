@@ -34,7 +34,7 @@ int main(int argc, char* argv[]) {
         input_path = "../data/inputs.txt";
 
     // initialize input stream from file
-    std::ifstream inputs (input_path);
+    std::ifstream inputs(input_path);
     if(inputs.fail()) {
         std::cout << "Failed to open the file, please check the input path." << std::endl;
         return -1;
@@ -46,7 +46,6 @@ int main(int argc, char* argv[]) {
         // remember that if you change the output string the benchmark script breaks :|
         utimer tff("Parallel time using Fastflow with " + std::to_string(nw) + " workers:");
 
-        inputs.open(input_path, std::ios::in);
         // get lines and obtain points from parsing
         if(inputs.is_open()) {
             std::string tmp;
@@ -70,7 +69,6 @@ int main(int argc, char* argv[]) {
                 // sort insert the distance between x and y
                 knn_utility::sort_insert(&min_k, std::make_pair(knn_utility::euclidean_distance(space[i], space[j]), space[j]), k);
             }
-            std::cout << "printing";
             // print result on file
             m_ostream.lock();
             output << knn_utility::min_k_to_str(space[i], min_k);
