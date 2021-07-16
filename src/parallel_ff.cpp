@@ -74,7 +74,7 @@ int main(int argc, char* argv[]) {
             }
             // print result on file
             m_ostream.lock();
-            output << knn_utility::min_k_to_str(space[i], min_k);
+            output << knn_utility::min_k_to_str(space[i], &min_k);
             m_ostream.unlock();
             // clear the structure
             min_k.clear();

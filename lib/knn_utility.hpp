@@ -26,26 +26,10 @@ namespace knn_utility {
     }
 
 
-    // Function to pretty print a vector of points
-    void print_elements(std::vector<point> elements) {
-        for(auto e : elements) {
-            std::cout << knn_utility::str_point(e);
-        }
-    }
-
-    
-    // Function to pretty print a vector of pdistances
-    void print_min_k(point p, std::vector<pdistance> x) {
-        std::cout << "Printing min_k of point: " << knn_utility::str_point(p) << std::endl;
-        for(auto e : x) {
-            std::cout << "Point: " << knn_utility::str_point(std::get<1>(e)) << " with distance: " << std::get<0>(e) << std::endl;
-        }
-    }
-
-    std::string min_k_to_str(point p, std::vector<pdistance> x) {
+    std::string min_k_to_str(point p, std::vector<pdistance>* x) {
         std::string r = "\n";
         r += knn_utility::str_point(p) + ": ";
-        for(auto e : x) {
+        for(auto e : (*x)) {
             r += "<" + knn_utility::str_point(std::get<1>(e)) + "," + std::to_string(std::get<0>(e)) + "> ";
         }
         return r;

@@ -24,7 +24,7 @@ void compute_min_k(std::vector<point>* space, int start, int finish, int k, std:
             knn_utility::sort_insert(&min_k, std::make_pair(knn_utility::euclidean_distance((*space)[i], y), y), k);
         }
         m_ostream.lock();
-        (*output) << knn_utility::min_k_to_str((*space)[i], min_k);
+        (*output) << knn_utility::min_k_to_str((*space)[i], &min_k);
         m_ostream.unlock();
         min_k.clear();
     }

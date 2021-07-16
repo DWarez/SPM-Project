@@ -67,7 +67,7 @@ int main(int argc, char* argv[]) {
                 knn_utility::sort_insert(&min_k, std::make_pair(knn_utility::euclidean_distance(x, y), y), k);
             }
             // print result on file
-            output << knn_utility::min_k_to_str(x, min_k);
+            output << knn_utility::min_k_to_str(x, &min_k);
             // clear the structure
             min_k.clear();
         }
