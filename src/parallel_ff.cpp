@@ -81,6 +81,7 @@ int main(int argc, char* argv[]) {
         };
 
         pf.parallel_for(0, space.size(), knn, nw);
+        // pf.parallel_for_static(0, space.size(), 1, space.size()/nw, knn, nw);
         // close output stream
         output.close();
     }

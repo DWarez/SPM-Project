@@ -35,3 +35,6 @@
 # Test
 test.*
 *.txt
+
+# Machine specific
+fastflow/ff/config.hpp
