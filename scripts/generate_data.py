@@ -10,8 +10,6 @@ parser.add_argument('-l', dest='lowerbound', type=float, default=-100, help='Low
 
 args = parser.parse_args()
 
-# just in case
-seen = []
 
 if not os.path.isdir("../data"):
     os.mkdir("../data")
@@ -19,8 +17,4 @@ if not os.path.isdir("../data"):
 with open("../data/inputs.txt", "w") as wfile:
     for i in range(args.elements):
         point = (round(random.uniform(args.lowerbound, args.upperbound), 2), round(random.uniform(args.lowerbound, args.upperbound), 2))
-        if point not in seen:
-            seen.append(point)
-            wfile.write(f"{point[0]},{point[1]}\n")
-        else:
-            i = i - 1
+        wfile.write(f"{point[0]},{point[1]}\n")

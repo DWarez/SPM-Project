@@ -65,7 +65,6 @@ namespace knn_utility {
 
     // function to insert pdistances in a sorted way
     void sort_insert(std::vector<pdistance>* x, pdistance* value, int* k) {
-
         // If empy simply add the value
         if(x->empty()) {
             x->push_back(*value);

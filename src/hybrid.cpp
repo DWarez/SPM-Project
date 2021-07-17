@@ -10,13 +10,14 @@
 #include <knn_utility.hpp>
 #include <utimer.hpp>
 
-#define SCALING_FACTOR 4
+#define SCALING_FACTOR 2
 // Mutex used to syncronize the output file
 std::mutex m_ostream;
 std::mutex m_mink;
 
 void par_sort_insert(std::vector<point>* space, std::vector<pdistance>* min_k, int outer_index, int start, int finish, int k) {
     for(size_t i = start; i < finish; ++i) {
+        if((std::get<0>((*space)[i]) == std::get<0>((*space)[outer_index])) && (std::get<1>((*space)[i]) == std::get<1>((*space)[outer_index]))) continue;
         m_mink.lock();
         knn_utility::sort_insert(min_k, &(std::make_pair(knn_utility::euclidean_distance(&((*space)[outer_index]), &((*space)[i])), (*space)[i])), &k);
         m_mink.unlock();
@@ -28,16 +29,17 @@ void par_sort_insert(std::vector<point>* space, std::vector<pdistance>* min_k, i
 void compute_min_k(std::vector<point>* space, int start, int finish, int k, int nw, std::ofstream* output) {
     std::vector<pdistance> min_k;
     std::vector<std::thread*> insert_tids;
-    int insert_nw = std::floor((nw - std::floor(nw/SCALING_FACTOR))/nw);
+    int insert_nw = std::floor((nw - std::floor(nw/SCALING_FACTOR))/std::floor(nw/SCALING_FACTOR));
     int rate = std::ceil(space->size()/insert_nw);
 
-    size_t i = 0; 
+    size_t i = 0;
+    int index = 0;
     for(size_t i = start; i < finish; ++i) {
-        for(size_t j = 0; j < insert_nw; ++j) {
-            insert_tids.push_back(new std::thread(par_sort_insert, space, &min_k, i, (j-1)*insert_nw, j*insert_nw, k));
-        }
-        for(auto e : insert_tids)
-            e->join();
+        // sbagliato perché start e finish di par_sort_insert devono essere chuncks di space perché lo devi controllare tutto
+        for(size_t j = 1; j <= insert_nw; ++j)
+            insert_tids.push_back(new std::thread(par_sort_insert, space, &min_k, i, (j-1)*rate, j*rate, k));
+        for(index; index < insert_tids.size(); ++index)
+            insert_tids.at(index)->join();
             
         m_ostream.lock();
         (*output) << knn_utility::min_k_to_str(&((*space)[i]), &min_k);
@@ -101,7 +103,6 @@ int main(int argc, char* argv[]) {
         int size = space.size();
         // establish how many points will be managed by the thread
         int rate = std::ceil(size/outer_nw);
-
         // starting threads
         size_t i = 0;
         for(i = 0; i < size; i += rate) {
@@ -110,7 +111,6 @@ int main(int argc, char* argv[]) {
             } else
                 tids.push_back(new std::thread(compute_min_k, &space, i, i + rate, k, nw, &output));
         }
-
         // joining threads
         for(auto e : tids) e->join();
         output.close();

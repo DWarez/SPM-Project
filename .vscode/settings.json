@@ -46,6 +46,7 @@
         "xutility": "cpp",
         "sstream": "cpp",
         "fstream": "cpp",
-        "mutex": "cpp"
+        "mutex": "cpp",
+        "thread": "cpp"
     }
 }
