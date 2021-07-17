@@ -3,7 +3,7 @@ CXXFLAGS = -W -Wall -Wextra -Wno-sign-compare -fpermissive -pthread
 
 LIB = ./lib
 FF = ./fastflow
-ALL = knn_sequential knn_parallel knn_fastflow
+ALL = knn_sequential knn_parallel knn_fastflow knn_hybrid
 
 sequential_in = ./src/sequential.cpp
 sequential_out = ./bin/sequential.o
