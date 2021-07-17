@@ -10,25 +10,42 @@
 #include <knn_utility.hpp>
 #include <utimer.hpp>
 
+#define SCALING_FACTOR 4
 // Mutex used to syncronize the output file
 std::mutex m_ostream;
+std::mutex m_mink;
+
+void par_sort_insert(std::vector<point>* space, std::vector<pdistance>* min_k, int outer_index, int start, int finish, int k) {
+    for(size_t i = start; i < finish; ++i) {
+        m_mink.lock();
+        knn_utility::sort_insert(min_k, &(std::make_pair(knn_utility::euclidean_distance(&((*space)[outer_index]), &((*space)[i])), (*space)[i])), &k);
+        m_mink.unlock();
+    }
+}
+
 
 // Body of the threads
-void compute_min_k(std::vector<point>* space, int start, int finish, int k, std::ofstream* output) {
+void compute_min_k(std::vector<point>* space, int start, int finish, int k, int nw, std::ofstream* output) {
     std::vector<pdistance> min_k;
+    std::vector<std::thread*> insert_tids;
+    int insert_nw = std::floor((nw - std::floor(nw/SCALING_FACTOR))/nw);
+    int rate = std::ceil(space->size()/insert_nw);
+
+    size_t i = 0; 
     for(size_t i = start; i < finish; ++i) {
-        for(auto y : (*space)) {
-            // skip distance between x and x itself
-            if((*space)[i] == y) continue;
-            // sort insert the distance between x and y
-            knn_utility::sort_insert(&min_k, &(std::make_pair(knn_utility::euclidean_distance(&((*space)[i]), &y), y)), &k);
+        for(size_t j = 0; j < insert_nw; ++j) {
+            insert_tids.push_back(new std::thread(par_sort_insert, space, &min_k, i, (j-1)*insert_nw, j*insert_nw, k));
         }
+        for(auto e : insert_tids)
+            e->join();
+            
         m_ostream.lock();
         (*output) << knn_utility::min_k_to_str(&((*space)[i]), &min_k);
         m_ostream.unlock();
         min_k.clear();
     }
 }
+
 
 
 int main(int argc, char* argv[]) {
@@ -57,7 +74,7 @@ int main(int argc, char* argv[]) {
     
     // open output stream
     std::ofstream output;
-    output.open("../data/output_par.txt", std::ios::out);
+    output.open("../data/output_hybrid.txt", std::ios::out);
 
     // vector of the input space
     std::vector<point> space;
@@ -76,22 +93,22 @@ int main(int argc, char* argv[]) {
         }
         inputs.close();
     }
-
+    int outer_nw = std::floor(nw/SCALING_FACTOR);
     {
         // remember that if you change the output string the benchmark script breaks :|
         utimer tpar("Parallel time with " + std::to_string(nw) + " workers");
 
         int size = space.size();
         // establish how many points will be managed by the thread
-        int rate = std::ceil(size/nw);
+        int rate = std::ceil(size/outer_nw);
 
         // starting threads
         size_t i = 0;
         for(i = 0; i < size; i += rate) {
             if(i + rate > size) {
-                tids.push_back(new std::thread(compute_min_k, &space, i, size, k, &output));
+                tids.push_back(new std::thread(compute_min_k, &space, i, size, k, nw, &output));
             } else
-                tids.push_back(new std::thread(compute_min_k, &space, i, i + rate, k, &output));
+                tids.push_back(new std::thread(compute_min_k, &space, i, i + rate, k, nw, &output));
         }
 
         // joining threads

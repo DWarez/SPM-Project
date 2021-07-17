@@ -1,5 +1,5 @@
 CXX = g++ -std=c++17 -O3
-CXXFLAGS = -W -Wall -Wextra -Wno-sign-compare -pthread
+CXXFLAGS = -W -Wall -Wextra -Wno-sign-compare -fpermissive -pthread
 
 LIB = ./lib
 FF = ./fastflow
@@ -13,6 +13,9 @@ parallel_out = ./bin/parallel.o
 
 fastflow_in = ./src/parallel_ff.cpp
 fastflow_out = ./bin/parallel_ff.o
+
+hybrid_in = ./src/hybrid.cpp
+hybrid_out = ./bin/hybrid.o
 
 .PHONY = all
 
@@ -29,3 +32,7 @@ knn_parallel:
 knn_fastflow:
 	mkdir -p bin
 	$(CXX) $(CXXFLAGS) -I $(FF) -I $(LIB) $(fastflow_in) -o $(fastflow_out)
+
+knn_hybrid:
+	mkdir -p bin
+	$(CXX) $(CXXFLAGS) -I $(FF) -I $(LIB) $(hybrid_in) -o $(hybrid_out)

@@ -62,25 +62,27 @@ int main(int argc, char* argv[]) {
         std::ofstream output;
         output.open("../data/output_ff.txt", std::ios::out);
 
+        int size = space.size();
+
         ff::ParallelFor pf(nw);
         auto knn = [&](const size_t i) {
             std::vector<pdistance> min_k;
             // for each point in the space
-            for(size_t j = 0; j < space.size(); ++j) {
+            for(size_t j = 0; j < size; ++j) {
                 // skip distance between x and x itself
                 if((std::get<0>(space[i]) == std::get<0>(space[j])) && (std::get<1>(space[i]) == std::get<1>(space[j]))) continue;
                 // sort insert the distance between x and y
-                knn_utility::sort_insert(&min_k, std::make_pair(knn_utility::euclidean_distance(space[i], space[j]), space[j]), k);
+                knn_utility::sort_insert(&min_k, &(std::make_pair(knn_utility::euclidean_distance(&(space[i]), &(space[j])), space[j])), &k);
             }
             // print result on file
             m_ostream.lock();
-            output << knn_utility::min_k_to_str(space[i], &min_k);
+            output << knn_utility::min_k_to_str(&(space[i]), &min_k);
             m_ostream.unlock();
             // clear the structure
             min_k.clear();
         };
 
-        pf.parallel_for(0, space.size(), knn, nw);
+        pf.parallel_for(0, size, knn, nw);
         // pf.parallel_for_static(0, space.size(), 1, space.size()/nw, knn, nw);
         // close output stream
         output.close();
