@@ -13,6 +13,7 @@
 // Mutex used to synchronize the output file
 std::mutex m_ostream;
 
+// Body of threads started in compute_min_k. Computes the local min_k of a given point
 void par_sort_insert(std::vector<point>* space, std::vector<pdistance>* min_k, int outer_index, int start, int finish, int k, std::mutex* m_mink) {
     for(size_t i = start; i < finish; ++i) {
         if((std::get<0>((*space)[i]) == std::get<0>((*space)[outer_index])) && (std::get<1>((*space)[i]) == std::get<1>((*space)[outer_index]))) continue;
@@ -25,24 +26,30 @@ void par_sort_insert(std::vector<point>* space, std::vector<pdistance>* min_k, i
 }
 
 
-// Body of the threads
+// Body of threads started in main
 void compute_min_k(std::vector<point>* space, int start, int finish, int k, int nw, const int SCALING_FACTOR, std::ofstream* output) {
     // Mutex used to synchronize the min_k structure
-    std::mutex m_mink; 
+    std::mutex m_mink;
+    // Min_k data structure shared among threads started from this
     std::vector<pdistance> min_k;
+    // tids of threads started from here
     std::vector<std::thread*> insert_tids;
+    // parameters needed for computation
     int insert_nw = std::floor((nw - std::floor(nw/SCALING_FACTOR))/std::floor(nw/SCALING_FACTOR));
     int rate = std::ceil(space->size()/insert_nw);
 
     size_t i = 0;
     int index = 0;
+    // for each point in the range assigned to the thread
     for(size_t i = start; i < finish; ++i) {
-        // sbagliato perché start e finish di par_sort_insert devono essere chuncks di space perché lo devi controllare tutto
+        // start a thread executing par_sort_insert
         for(size_t j = 1; j <= insert_nw; ++j)
             insert_tids.push_back(new std::thread(par_sort_insert, space, &min_k, i, (j-1)*rate, j*rate, k, &m_mink));
+        // join them
         for(index; index < insert_tids.size(); ++index)
             insert_tids.at(index)->join();
-            
+        
+        // write on output file and clear the data structure
         m_ostream.lock();
         (*output) << knn_utility::min_k_to_str(&((*space)[i]), &min_k);
         m_ostream.unlock();
