@@ -18,9 +18,10 @@ void par_sort_insert(std::vector<point>* space, std::vector<pdistance>* min_k, i
     for(size_t i = start; i < finish; ++i) {
         if((std::get<0>((*space)[i]) == std::get<0>((*space)[outer_index])) && (std::get<1>((*space)[i]) == std::get<1>((*space)[outer_index]))) continue;
         double distance = knn_utility::euclidean_distance(&((*space)[outer_index]), &((*space)[i]));
+        auto pair = std::make_pair(distance, (*space)[i]);
         if(min_k->size() >= k && distance >= std::get<0>(min_k->back())) continue;
         (*m_mink).lock();
-        knn_utility::sort_insert(min_k, &(std::make_pair(distance, (*space)[i])), &k);
+        knn_utility::sort_insert(min_k, &pair, &k);
         (*m_mink).unlock();
     }
 }

@@ -1,5 +1,5 @@
 CXX = g++ -std=c++17 -O3
-CXXFLAGS = -W -Wall -Wextra -Wno-sign-compare -fpermissive -pthread
+CXXFLAGS = -W -Wall -Wextra -Wno-sign-compare -pthread
 
 LIB = ./lib
 FF = ./fastflow

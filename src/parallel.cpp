@@ -21,7 +21,9 @@ void compute_min_k(std::vector<point>* space, int start, int finish, int k, std:
             // skip distance between x and x itself
             if((*space)[i] == y) continue;
             // sort insert the distance between x and y
-            knn_utility::sort_insert(&min_k, &(std::make_pair(knn_utility::euclidean_distance(&((*space)[i]), &y), y)), &k);
+            double distance = knn_utility::euclidean_distance(&((*space)[i]), &y);
+            auto pair = std::make_pair(distance, y);
+            knn_utility::sort_insert(&min_k, &pair, &k);
         }
         m_ostream.lock();
         (*output) << knn_utility::min_k_to_str(&((*space)[i]), &min_k);

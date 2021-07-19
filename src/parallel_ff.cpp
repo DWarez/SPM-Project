@@ -72,7 +72,9 @@ int main(int argc, char* argv[]) {
                 // skip distance between x and x itself
                 if((std::get<0>(space[i]) == std::get<0>(space[j])) && (std::get<1>(space[i]) == std::get<1>(space[j]))) continue;
                 // sort insert the distance between x and y
-                knn_utility::sort_insert(&min_k, &(std::make_pair(knn_utility::euclidean_distance(&(space[i]), &(space[j])), space[j])), &k);
+                double distance = knn_utility::euclidean_distance(&(space[i]), &(space[j]));
+                auto pair = std::make_pair(distance, space[j]);
+                knn_utility::sort_insert(&min_k, &pair, &k);
             }
             // print result on file
             m_ostream.lock();
@@ -83,7 +85,6 @@ int main(int argc, char* argv[]) {
         };
 
         pf.parallel_for(0, size, knn, nw);
-        // pf.parallel_for_static(0, space.size(), 1, space.size()/nw, knn, nw);
         // close output stream
         output.close();
     }
