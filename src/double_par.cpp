@@ -10,24 +10,25 @@
 #include <knn_utility.hpp>
 #include <utimer.hpp>
 
-// Mutex used to syncronize the output file
+// Mutex used to synchronize the output file
 std::mutex m_ostream;
-std::mutex m_mink;
 
-void par_sort_insert(std::vector<point>* space, std::vector<pdistance>* min_k, int outer_index, int start, int finish, int k) {
+void par_sort_insert(std::vector<point>* space, std::vector<pdistance>* min_k, int outer_index, int start, int finish, int k, std::mutex* m_mink) {
     for(size_t i = start; i < finish; ++i) {
         if((std::get<0>((*space)[i]) == std::get<0>((*space)[outer_index])) && (std::get<1>((*space)[i]) == std::get<1>((*space)[outer_index]))) continue;
         double distance = knn_utility::euclidean_distance(&((*space)[outer_index]), &((*space)[i]));
         if(min_k->size() >= k && distance >= std::get<0>(min_k->back())) continue;
-        m_mink.lock();
+        (*m_mink).lock();
         knn_utility::sort_insert(min_k, &(std::make_pair(distance, (*space)[i])), &k);
-        m_mink.unlock();
+        (*m_mink).unlock();
     }
 }
 
 
 // Body of the threads
 void compute_min_k(std::vector<point>* space, int start, int finish, int k, int nw, const int SCALING_FACTOR, std::ofstream* output) {
+    // Mutex used to synchronize the min_k structure
+    std::mutex m_mink; 
     std::vector<pdistance> min_k;
     std::vector<std::thread*> insert_tids;
     int insert_nw = std::floor((nw - std::floor(nw/SCALING_FACTOR))/std::floor(nw/SCALING_FACTOR));
@@ -38,7 +39,7 @@ void compute_min_k(std::vector<point>* space, int start, int finish, int k, int 
     for(size_t i = start; i < finish; ++i) {
         // sbagliato perché start e finish di par_sort_insert devono essere chuncks di space perché lo devi controllare tutto
         for(size_t j = 1; j <= insert_nw; ++j)
-            insert_tids.push_back(new std::thread(par_sort_insert, space, &min_k, i, (j-1)*rate, j*rate, k));
+            insert_tids.push_back(new std::thread(par_sort_insert, space, &min_k, i, (j-1)*rate, j*rate, k, &m_mink));
         for(index; index < insert_tids.size(); ++index)
             insert_tids.at(index)->join();
             
