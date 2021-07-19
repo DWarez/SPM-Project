@@ -2,7 +2,7 @@
 
 # check correct number of parameters
 if [ "$#" -ne 4 ]; then
-    echo "Usage: ./sequential_benchmark.sh <number of iterations> <number of points> <number of workers> <input file>"
+    echo "Usage: ./fastflow_benchmark.sh <number of iterations> <number of points> <number of workers> <input file>"
     exit 2
 fi
 

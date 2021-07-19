@@ -2,7 +2,7 @@
 
 # check correct number of parameters
 if [ "$#" -ne 4 ]; then
-    echo "Usage: ./parallel_benchmark.sh <number of iterations> <number of points> <number of workers> <input file>"
+    echo "Usage: ./double_benchmark.sh <number of iterations> <number of points> <number of workers> <input file>"
     exit 2
 fi
 
@@ -14,4 +14,4 @@ input=$4
 
 # compute mean elapsed time
 echo "Computing the mean parallel completation time using $nw workers considering K = $points using $iterations iterations"
-for((i=0; i<$iterations; i++)); do ../bin/parallel.o $points $nw "../bin/$input"; done | awk '{sum += $8} END {printf "%.0f", sum/(0.5 * NR)}'
+for((i=0; i<$iterations; i++)); do ../bin/double_par.o $points $nw "../bin/$input"; done | awk '{sum += $8} END {printf "%.0f", sum/(0.5 * NR)}'
