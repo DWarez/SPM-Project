@@ -80,10 +80,10 @@ In fact we can also avoid sorting the whole data structure, by simply keeping th
                     \State $d \gets \textsc{Distance}(x, y)$
                     \If{$\textsc{Size}(k\_nearest\_neighbors) == 0$}
                         \State $\textsc{Insert}(k\_nearest\_neighbors, \left < y ; d \right >)$
-                        \State $return$
+                        \State $continue$
                     \EndIf
                     \If{$\textsc{Size}(k\_nearest\_neighbors) = k \lor d > max(k\_nearest\_neighbors)$}
-                        \State $return$ 
+                        \State $continue$ 
                     \EndIf
                     \State $\textsc{Sort\_Insert}(k\_nearest\_neighbors, y)$
                     \If{$\textsc{Size}(k\_nearest\_neighbors)$}
@@ -264,7 +264,7 @@ To generate data please run \texttt{python3 /SPM-Project/scripts/generate\_data.
     \item \texttt{fastflow} contains a local version of fastflow. In the folder received it's setup for my machine;
     \item \texttt{lib} contains useful libraries used in the implementations;
     \item \texttt{scripts} contains scripts to benchmark and generate new data;
-    \item \texttt{src} contains the source of the implementations.
+    \item \texttt{src} contains the source code of the implementations.
 \end{itemize}
 
 \end{document}

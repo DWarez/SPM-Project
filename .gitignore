@@ -32,11 +32,5 @@
 *.app
 /bin
 
-# Test
-test.*
-*.txt
-
 # Machine specific
 fastflow/ff/config.hpp
-
-/src/hybrid.cpp
