@@ -59,7 +59,7 @@ namespace knn_utility {
 
     // function to compute the euclian distance in 2D: r = sqrt((x_0 - y_0)^2 + (x_1 - y_1)^2)
     double euclidean_distance(point* x, point* y) {
-        return sqrt(pow((std::get<0>(*x) - std::get<0>(*y)), 2) + pow((std::get<1>(*x) - std::get<1>(*y)), 2));
+        return pow((std::get<0>(*x) - std::get<0>(*y)), 2) + pow((std::get<1>(*x) - std::get<1>(*y)), 2);
     }
 
 

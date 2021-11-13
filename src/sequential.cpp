@@ -69,7 +69,10 @@ int main(int argc, char* argv[]) {
                 knn_utility::sort_insert(&min_k, &pair, &k);
             }
             // print result on file
+        {
+            utimer tseq_out("output time");
             output << knn_utility::min_k_to_str(&x, &min_k);
+        }
             // clear the structure
             min_k.clear();
         }
